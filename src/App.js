@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { createTheme } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/styles";
+import { useEffect, useState } from "react";
+import Loader from "./components/Loader";
+import UploadedFile from "./components/UploadedFile";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import UploadImg from "./components/UploadImg";
+import Image from "./components/Image";
+
+const theme = createTheme({
+  overrides: {
+    MuiDropzoneArea: {
+      text: {
+        position: "relative",
+        bottom: -150,
+        fontSize: 16,
+        color: "grey",
+        backgroundColor: "none",
+      },
+    },
+  },
+});
 
 function App() {
+  const [data, setData] = useState(null);
+  const [isloading, setIsloading] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <ThemeProvider theme={theme}>
+              {data ? (
+                isloading ? (
+                  <Loader />
+                ) : (
+                  <UploadedFile data={data} />
+                )
+              ) : (
+                <UploadImg setData={setData} setIsloading={setIsloading} />
+              )}
+            </ThemeProvider>
+          </Route>
+          <Route path="/image/:id" component={Image} />
+        </Switch>
+      </Router>
+    </>
   );
 }
 
